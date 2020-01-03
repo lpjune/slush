@@ -4,10 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Criteria
-import android.location.Location
-import android.location.LocationManager
+import android.location.*
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -15,6 +15,12 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.loopj.android.http.JsonHttpResponseHandler
+import cz.msebera.android.httpclient.Header
+import org.json.JSONObject
 
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -42,10 +48,67 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         showLocation()
+        fetchPlaces()
 
         // Add a marker in Sydney and move the camera
 //        val sydney = LatLng(-34.0, 151.0)
 //        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+    }
+
+    fun fetchPlaces() {
+        val client = PlaceClient()
+        client.getPlaces(object: JsonHttpResponseHandler(){
+            override fun onSuccess(
+                statusCode: Int,
+                headers: Array<out Header>?,
+                response: JSONObject?
+            ) {
+                val items = response?.getJSONArray("results")
+                println(items)
+                if (items != null) {
+                    val places = PlaceModel.fromJSON(items)
+                    println(places)
+                    val addressList = mutableListOf<Address>()
+                    Log.i("Assert", places.toString())
+                    for(place in places) {
+                        val locationName = place.name
+                        val gc = Geocoder(applicationContext)
+                        addressList += gc.getFromLocationName(locationName, 5)
+                        Log.e("Information", addressList.toString())
+                    }
+                    var latLngs = arrayListOf<LatLng>()
+                    for(place in places) {
+                        var latlng = LatLng(place.lat, place.lng)
+                        var placeMarker: Marker = mMap.addMarker(MarkerOptions()
+                                                        .position(latlng)
+                                                        .title(place.name)
+                                                        .snippet(place.address))
+                        placeMarker.showInfoWindow()
+                        latLngs.add(latlng)
+                    }
+                    var builder = LatLngBounds.Builder();
+                    for(pos in latLngs) {
+                        builder.include(pos)
+                    }
+                    var bounds: LatLngBounds = builder.build()
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 80))
+                }
+                Toast.makeText(applicationContext, items?.length().toString()
+                    .plus(" items loaded"), Toast.LENGTH_LONG).show()
+                print(items)
+                super.onSuccess(statusCode, headers, response)
+            }
+
+            override fun onFailure(
+                statusCode: Int,
+                headers: Array<out Header>?,
+                responseString: String?,
+                throwable: Throwable?
+            ) {
+                Toast.makeText(applicationContext,responseString, Toast.LENGTH_LONG).show()
+                super.onFailure(statusCode, headers, responseString, throwable)
+            }
+        }, getLat(), getLng(), applicationContext)
     }
 
     private fun doShowLocation() {
@@ -56,15 +119,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     @SuppressLint("MissingPermission")
-    private fun moveCam() {
+    fun getLat(): Double {
         val locationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val criteria = Criteria()
         val location: Location =
             locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
 
-        var lat: Double = location.getLatitude()
-        var lng: Double = location.getLongitude()
+        val lat: Double = location.getLatitude()
+        return lat
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getLng(): Double {
+        val locationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val criteria = Criteria()
+        val location: Location =
+            locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
+
+        val lng: Double = location.getLongitude()
+        return lng
+    }
+
+    private fun moveCam() {
+        var lat = getLat()
+        var lng = getLng()
         var currentPosition = LatLng(lat, lng)
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition))
