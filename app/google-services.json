@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "836113673036",
+    "firebase_url": "https://slushapp-61622.firebaseio.com",
+    "project_id": "slushapp-61622",
+    "storage_bucket": "slushapp-61622.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836113673036:android:8c69673fcc1543c92c7de9",
+        "android_client_info": {
+          "package_name": "com.example.slush"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836113673036-umcdaf081hfvocskbv4de9904uac0ngp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.slush",
+            "certificate_hash": "31e558546919e2e9b98ab9bfd26cc9fef28f7ff3"
+          }
+        },
+        {
+          "client_id": "836113673036-isi2j935ef71ites7or4aa7rh5c12ugb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8WLiLZ5EHIqszRFlOKSIrmtI9sb6g7Qc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836113673036-isi2j935ef71ites7or4aa7rh5c12ugb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

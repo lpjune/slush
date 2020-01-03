@@ -19,7 +19,7 @@ class PlaceClient {
         val url = API_BASE_URL
         print(url)
         val params = RequestParams()
-        val key: String = c.getString(R.string.google_maps_key)
+        val key: String = c.getString(R.string.google_api_key)
         var locationString: String = "$lat,$lng"
 //        var fields: String = "name, place_id, formatted_address"
         params.put("location", locationString)
