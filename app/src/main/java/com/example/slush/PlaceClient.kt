@@ -9,9 +9,7 @@ import com.loopj.android.http.RequestParams
 
 class PlaceClient {
     private var client: AsyncHttpClient? = null
-    private val API_BASE_URL: String = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
-    private val API_ORGANIZATIONS_URL: String = "/organizations"
-    var accessToken: String = "@string"
+    private val API_BASE_URL: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
 
     init {
         client = AsyncHttpClient()
@@ -23,15 +21,13 @@ class PlaceClient {
         val params = RequestParams()
         val key: String = c.getString(R.string.google_maps_key)
         var locationString: String = "$lat,$lng"
+//        var fields: String = "name, place_id, formatted_address"
         params.put("location", locationString)
         params.put("radius", "5000")
-        params.put("types", "gas_station")
+        params.put("type", "gas_station")
+//        params.put("fields", fields)
         params.put("key", key)
         client?.get(url,params,handler)
-    }
-
-    fun getApiUrl(relativeUrl: String): String{
-        return API_BASE_URL.plus(relativeUrl)
     }
 
 }

@@ -47,6 +47,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         showLocation()
+        fetchPlaces()
 
         // Add a marker in Sydney and move the camera
 //        val sydney = LatLng(-34.0, 151.0)
@@ -61,9 +62,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 headers: Array<out Header>?,
                 response: JSONObject?
             ) {
-                val items = response?.getJSONArray("organizations")
+                val items = response?.getJSONArray("results")
+                println(items)
                 if (items != null) {
                     val places = PlaceModel.fromJSON(items)
+                    println(places)
                     val addressList = mutableListOf<Address>()
                     Log.i("Assert", places.toString())
                     for(place in places) {
@@ -73,8 +76,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         Log.e("Information", addressList.toString())
                     }
                     var latLngs = arrayListOf<LatLng>()
-                    for(address in addressList) {
-                        var latlng = LatLng(address.latitude, address.longitude)
+                    for(place in places) {
+                        var latlng = LatLng(place.lat, place.lng)
                         mMap.addMarker(MarkerOptions().position(latlng))
                         latLngs.add(latlng)
                     }
@@ -97,7 +100,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 responseString: String?,
                 throwable: Throwable?
             ) {
-                Toast.makeText(applicationContext,"Fix token: " + responseString, Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext,responseString, Toast.LENGTH_LONG).show()
                 super.onFailure(statusCode, headers, responseString, throwable)
             }
         }, getLat(), getLng(), applicationContext)

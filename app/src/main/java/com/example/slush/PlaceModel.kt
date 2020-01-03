@@ -5,20 +5,27 @@ import org.json.JSONObject
 class PlaceModel {
     var id: String? = null
     var name:String? = null
-    var location: String? = null
-    var email: String? = null
+    var address: String? = null
+    var lat: Double = 0.0
+    var lng: Double = 0.0
 
     companion object {
         fun fromJSON(jsonObject: JSONObject): PlaceModel{
             val placeModel = PlaceModel()
-            placeModel.id = jsonObject.getString("id")
+            println("HERE" + jsonObject)
+            placeModel.id = jsonObject.getString("place_id")
             placeModel.name = jsonObject.getString("name")
-            placeModel.location = jsonObject.getString("address")
-            placeModel.email = jsonObject.getString("email")
+            val geo: JSONObject = jsonObject.getJSONObject("geometry")
+            println("GEO: " + geo)
+            val loc: JSONObject = geo.getJSONObject("location")
+            println("LOC: " + loc)
+            placeModel.lat = loc.getDouble("lat")
+            placeModel.lng = loc.getDouble("lng")
+//            placeModel.address = jsonObject.getString("formatted_address")
 
             //TODO: Remove
             print("*****\n*\n")
-            print(placeModel.name + "  " + placeModel.location)
+            print(placeModel.name + "  " + placeModel.id)
             print("*****\n*\n")
 
             return placeModel
