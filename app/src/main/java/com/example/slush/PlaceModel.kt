@@ -5,7 +5,6 @@ import org.json.JSONObject
 class PlaceModel {
     var id: String? = null
     var name:String? = null
-    var address: String? = null
     var lat: Double = 0.0
     var lng: Double = 0.0
 
@@ -21,7 +20,6 @@ class PlaceModel {
             println("LOC: " + loc)
             placeModel.lat = loc.getDouble("lat")
             placeModel.lng = loc.getDouble("lng")
-//            placeModel.address = jsonObject.getString("formatted_address")
 
             //TODO: Remove
             print("*****\n*\n")

@@ -16,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.loopj.android.http.JsonHttpResponseHandler
 import cz.msebera.android.httpclient.Header
@@ -78,7 +79,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     var latLngs = arrayListOf<LatLng>()
                     for(place in places) {
                         var latlng = LatLng(place.lat, place.lng)
-                        mMap.addMarker(MarkerOptions().position(latlng))
+                        var placeMarker: Marker = mMap.addMarker(MarkerOptions()
+                                                        .position(latlng)
+                                                        .title(place.name)
+                                                        .snippet("a place"))
+                        placeMarker.showInfoWindow()
                         latLngs.add(latlng)
                     }
                     var builder = LatLngBounds.Builder();
