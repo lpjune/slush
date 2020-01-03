@@ -82,7 +82,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         var placeMarker: Marker = mMap.addMarker(MarkerOptions()
                                                         .position(latlng)
                                                         .title(place.name)
-                                                        .snippet("a place"))
+                                                        .snippet(place.address))
                         placeMarker.showInfoWindow()
                         latLngs.add(latlng)
                     }
